@@ -1,0 +1,302 @@
+---
+title: "field flux analysis"
+output: html_document
+---
+
+Uploading the clean csv file with our field flux, moisture, temperature, etc.
+```{r}
+setwd("~/Dropbox/Soil Respiration/2021 Field Flux Data")
+datafull <- read.csv("FieldRespirationSummaryTrimmed.csv", sep=",", header=T)
+```
+Subsetting the matrix to remove measurements with fungi, with very high flux, and then to make new matrices for each site.  Then further trimming the lower matrix to remove some more outlier points.
+
+```{r}
+data1<-subset(datafull, datafull$Fungi=="FALSE")
+data<-subset(data1, data1$Slope<12)
+datalower<-subset(data, data$Site=="Lower")
+datau<-subset(data, data$Site=="Upper")
+datalower2<-subset(datalower, datalower$DOY<325)
+datalower1<-subset(datalower2, datalower2$DOY>166)
+```
+
+Removing any row with an NA.
+
+```{r}
+data_nona <- na.omit(data)
+```
+
+Q10:
+For the entire experiment, creates a matrix with the q10, r20, and errors on each.
+
+```{r}
+matt<-matrix(0,1000,4)
+for(i in 1:nrow(matt)) {
+  mdlco2t<-lm(data$Slope~I(data$SoilTemp_C^2), data=data)
+  fitRsCO2t <-lm(log(data$Slope)~data$SoilTemp_C)
+  matt[i,1] <-exp(10*fitRsCO2t$coefficients[2])
+  matt[i,2]<-mdlco2t$coefficients[2]*(20^2)+mdlco2t$coefficients[1]
+  matt[i,3] <-exp(10*(coef(summary(fitRsCO2t))[2, "Std. Error"]))
+  matt[i,4] <-(coef(summary(fitRsCO2t))[2, "Std. Error"])*(20^2)+(coef(summary(fitRsCO2t))[1, "Std. Error"])
+}
+
+mdlco2<-lm(data$Slope~I(data$SoilTemp_C^2), data=data)
+matt[i,2]<-mdlco2$coefficients[2]*(20^2)+mdlco2$coefficients[1]
+
+```
+
+For each site, repeating the above process.
+
+```{r}
+matu<-matrix(0,1000,2)
+for(i in 1:nrow(matu)) {
+  mdlco2u<-lm(datau$Slope~I(datau$SoilTemp_C^2), data=datau)
+  fitRsCO2u <-lm(log(datau$Slope)~datau$SoilTemp_C)
+  matu[i,1] <-exp(10*fitRsCO2u$coefficients[2])
+  matu[i,2]<-mdlco2u$coefficients[2]*(20^2)+mdlco2u$coefficients[1]
+}
+
+mdlco2u<-lm(datau$Slope~I(datau$SoilTemp_C^2), data=datau)
+matu[i,2]<-mdlco2u$coefficients[2]*(20^2)+mdlco2u$coefficients[1]
+
+
+
+
+data_nonal <- subset(datalower1, na.omit=TRUE)
+
+matl<-matrix(0,1000,2)
+for(i in 1:nrow(matl)) {
+  mdlco2l<-lm(datalower1$Slope~I(datalower1$SoilTemp_C^2), data=datalower1)
+  fitRsCO2l <-lm(log(datalower1$Slope)~datalower1$SoilTemp_C)
+  matl[i,1] <-exp(10*fitRsCO2l$coefficients[2])
+  matl[i,2]<-mdlco2l$coefficients[2]*(20^2)+mdlco2l$coefficients[1]
+}
+
+mdlco2l<-lm(datalower1$Slope~I(datalower1$SoilTemp_C^2), data=datalower1)
+matl[i,2]<-mdlco2l$coefficients[2]*(20^2)+mdlco2l$coefficients[1]
+
+```
+
+Repeating again for each of the four subsites.
+
+```{r}
+dataua <- subset(datau, 41>Plot)
+matua<-matrix(0,1000,2)
+for(i in 1:nrow(matua)) {
+  mdlco2ua<-lm(dataua$Slope~I(dataua$SoilTemp_C^2), data=dataua)
+  fitRsCO2ua <-lm(log(dataua$Slope)~dataua$SoilTemp_C)
+  matua[i,1] <-exp(10*fitRsCO2ua$coefficients[2])
+  matua[i,2]<-mdlco2ua$coefficients[2]*(20^2)+mdlco2ua$coefficients[1]
+}
+
+mdlco2ua<-lm(dataua$Slope~I(dataua$SoilTemp_C^2), data=dataua)
+matua[i,2]<-mdlco2ua$coefficients[2]*(20^2)+mdlco2ua$coefficients[1]
+
+dataub <- subset(datau, 40<Plot)
+matub<-matrix(0,1000,2)
+for(i in 1:nrow(matub)) {
+  mdlco2ub<-lm(dataub$Slope~I(dataub$SoilTemp_C^2), data=dataub)
+  fitRsCO2ub <-lm(log(dataub$Slope)~dataub$SoilTemp_C)
+  matub[i,1] <-exp(10*fitRsCO2ub$coefficients[2])
+  matub[i,2]<-mdlco2ub$coefficients[2]*(20^2)+mdlco2ub$coefficients[1]
+}
+
+mdlco2ub<-lm(dataub$Slope~I(dataub$SoilTemp_C^2), data=dataub)
+matub[i,2]<-mdlco2ub$coefficients[2]*(20^2)+mdlco2ub$coefficients[1]
+
+
+
+datalower1a <- subset(datalower1, Plot<19)
+
+matla<-matrix(0,1000,2)
+for(i in 1:nrow(matla)) {
+  mdlco2la<-lm(datalower1a$Slope~I(datalower1a$SoilTemp_C^2), data=datalower1a)
+  fitRsCO2la <-lm(log(datalower1a$Slope)~datalower1a$SoilTemp_C)
+  matla[i,1] <-exp(10*fitRsCO2la$coefficients[2])
+  matla[i,2]<-mdlco2la$coefficients[2]*(20^2)+mdlco2la$coefficients[1]
+}
+
+mdlco2la<-lm(datalower1a$Slope~I(datalower1a$SoilTemp_C^2), data=datalower1a)
+matla[i,2]<-mdlco2la$coefficients[2]*(20^2)+mdlco2la$coefficients[1]
+
+datalower1b <- subset(datalower1, Plot>18)
+
+matlb<-matrix(0,1000,2)
+for(i in 1:nrow(matlb)) {
+  mdlco2lb<-lm(datalower1b$Slope~I(datalower1b$SoilTemp_C^2), data=datalower1b)
+  fitRsCO2lb <-lm(log(datalower1b$Slope)~datalower1b$SoilTemp_C)
+  matlb[i,1] <-exp(10*fitRsCO2lb$coefficients[2])
+  matlb[i,2]<-mdlco2lb$coefficients[2]*(20^2)+mdlco2lb$coefficients[1]
+}
+
+mdlco2lb<-lm(datalower1b$Slope~I(datalower1b$SoilTemp_C^2), data=datalower1b)
+matlb[i,2]<-mdlco2lb$coefficients[2]*(20^2)+mdlco2lb$coefficients[1]
+```
+
+Finally, creating a matrix that gives the same four values caluclated for each individual plot.
+
+```{r}
+mat<-matrix(0,48,4)
+for(i in 1:nrow(mat)) {
+  mdlco2<-lm(data$Slope[data$Plot==i]~I(data$SoilTemp_C[data$Plot==i]^2), data=data)
+  fitRsCO2 <-lm(log(data$Slope[data$Plot==i])~data$SoilTemp_C[data$Plot==i])
+  mat[i,1] <-exp(10*fitRsCO2$coefficients[2])
+  mat[i,2]<-mdlco2$coefficients[2]*(20^2)+mdlco2$coefficients[1]
+  mat[i,3] <-((coef(summary(fitRsCO2))[2, "Std. Error"])/fitRsCO2$coefficients[2])*(exp(10*fitRsCO2$coefficients[2]))
+  mat[i,4] <-(coef(summary(mdlco2))[2, "Std. Error"]/mdlco2$coefficients[2])*(mdlco2$coefficients[2]*(20^2)+mdlco2$coefficients[1])
+}
+
+
+```
+
+Finding the standard dev for each site from the plot level q10 estimates:
+on upper q10
+on lower q10
+on upper r20
+on lower r20
+
+```{r}
+sd(mat[1:24,1])
+sd(mat[25:48,1])
+sd(mat[1:24,2])
+sd(mat[25:48,2])
+
+```
+
+Creating plot level linearized Q10 models for each site without the moisture term, and finding the AIC value for each.
+
+```{r}
+data$yn <- log(data$Slope)
+
+simplel <- lm(yn~SoilTemp_C, data=subset(data, data$Plot<"25"))
+
+summary(simplel)
+
+extractAIC(simplel)
+
+simpleu <- lm(yn~SoilTemp_C, data=subset(data, data$Plot>"24"))
+
+summary(simpleu)
+
+extractAIC(simpleu)
+
+```
+
+Creating plot level linearized Q10 models for each site that are moisture inclusive (after Khomik 2012), and finding the AIC values for each.
+
+```{r}
+data$xi <-((data$SoilTemp_C-10)/10)
+data$y1<-log(data$Slope)
+
+datalower1$xi <-((datalower1$SoilTemp_C-10)/10)
+datalower1$y1<-log(datalower1$Slope)
+
+qtenm <-lm(y1~xi + SoilMoisture_Percent , data=data)
+
+summary(qtenm)
+extractAIC(qtenm)
+
+qtenmu <-lm(y1~xi * SoilMoisture_Percent , data=subset(data, data$Plot>"24"))
+
+summary(qtenmu)
+extractAIC(qtenmu)
+
+qtenml <-lm(y1~xi * SoilMoisture_Percent , data=subset(data, data$Plot<"25"))
+
+summary(qtenml)
+extractAIC(qtenml)
+
+
+```
+
+Finding the BIC values for the site linearized Q10 models using and not using mositure as a predictor variable.
+
+```{r}
+library(flexmix)
+
+BIC(simpleu)
+BIC(simplel)
+BIC(qtenmu)
+BIC(qtenml)
+```
+
+Using a bootstrapping procedure to estimate the error on estimates of Q10 and R20 for each plot.
+
+```{r}
+upperflux<-datau[c("Slope", "SoilTemp_C")]
+Lowerflux<-datalower1[c("Slope", "SoilTemp_C")]
+
+mat<-matrix(0,1000,2)
+for(i in 1:nrow(mat)) {
+  tbootCO2 <- upperflux[sample(nrow(upperflux), size=nrow(upperflux), replace=TRUE),]
+  mdl4CO2 <- lm(tbootCO2$Slope ~ I(tbootCO2$SoilTemp_C^2), data = tbootCO2)
+  fitRsCO2 <-lm(log(tbootCO2$Slope)~tbootCO2$SoilTemp_C)
+  mat[i,1] <-exp(10*fitRsCO2$coefficients[2])
+  mat[i,2]<-mdl4CO2$coefficients[2]*(20^2)+mdl4CO2$coefficients[1]
+  
+}
+head(mat)
+colnames(mat)<-c("CO2_Q10", "CO2_Rsoil20")
+temp0boot<-as.data.frame(mat)
+UpperQ10<-cbind(
+  CO2_mean<-mean(temp0boot$CO2_Q10),
+  CO2_upperci<-quantile(temp0boot$CO2_Q10, 0.975),
+  CO2_lowerci<-quantile(temp0boot$CO2_Q10, 0.025))
+UpperR20<-cbind(
+  CO2_mean<-mean(temp0boot$CO2_Rsoil20),
+  CO2_upperci<-quantile(temp0boot$CO2_Rsoil20, 0.975),
+  CO2_lowerci<-quantile(temp0boot$CO2_Rsoil20, 0.025))
+
+mat<-matrix(0,1000,2)
+for(i in 1:nrow(mat)) {
+  tbootCO2 <- Lowerflux[sample(nrow(Lowerflux), size=nrow(Lowerflux), replace=TRUE),]
+  mdl4CO2 <- lm(tbootCO2$Slope ~ I(tbootCO2$SoilTemp_C^2), data = tbootCO2)
+  fitRsCO2 <-lm(log(tbootCO2$Slope)~tbootCO2$SoilTemp_C)
+  mat[i,1] <-exp(10*fitRsCO2$coefficients[2])
+  mat[i,2]<-mdl4CO2$coefficients[2]*(20^2)+mdl4CO2$coefficients[1]
+  
+}
+head(mat)
+colnames(mat)<-c("CO2_Q10", "CO2_Rsoil20")
+temp2.25boot<-as.data.frame(mat)
+LowerQ10<-cbind(
+  CO2_mean<-mean(temp2.25boot$CO2_Q10),
+  CO2_upperci<-quantile(temp2.25boot$CO2_Q10, 0.975),
+  CO2_lowerci<-quantile(temp2.25boot$CO2_Q10, 0.025))
+LowerR20<-cbind(
+  CO2_mean<-mean(temp2.25boot$CO2_Rsoil20),
+  CO2_upperci<-quantile(temp2.25boot$CO2_Rsoil20, 0.975),
+  CO2_lowerci<-quantile(temp2.25boot$CO2_Rsoil20, 0.025))
+```
+
+Finding the standard error on site level q10 and r20.
+
+```{r}
+##upper
+(UpperQ10[1,2]-UpperQ10[1,3])/3.92
+(UpperR20[1,2]-UpperR20[1,3])/3.92
+
+##Lower
+(LowerQ10[1,2]-LowerQ10[1,3])/3.92
+(LowerR20[1,2]-LowerR20[1,3])/3.92
+```
+
+finding average soil temps and moistures at each site
+
+```{r}
+mean(datalower$SoilTemp_C)
+sd(datalower$SoilTemp_C)
+mean(datau$SoilTemp_C)
+sd(datau$SoilTemp_C)
+mean(datalower$SoilMoisture_Percent)
+mean(datau$SoilMoisture_Percent)
+sd(datalower$SoilMoisture_Percent)
+sd(datau$SoilMoisture_Percent)
+
+```
+Calculating the average moisture over the measurement period per plot.
+
+```{r}
+mean_moisture <- aggregate(data$SoilMoisture_Percent, by=data.frame(data$Plot), mean, na.rm=T)
+```
+
+
