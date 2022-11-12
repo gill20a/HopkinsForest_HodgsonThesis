@@ -1,7 +1,8 @@
 
-##setting the working directory and loading the data spreadhseet, as well as clling the required packages
-setwd("~/Dropbox/Soil Respiration/Substrate Addition Data") #Set network drive, will have to change for your own computer
-Flux<-read.csv("2021_11_01_Timesandfluxes.csv", sep=",", header=T) #Name your data file to call it later in the code
+##setting the working directory and loading the data spreadhseet, as well as calling the required packages
+urlfile = "https://github.com/gill20a/HopkinsForest_HodgsonThesis/blob/0992d9081a2e934e9511a38273dd9f59d89947f2/2021_11_01_Timesandfluxes.csv"
+Flux<-read.csv(url(urlfile))
+
 
 head(Flux)
 # install.packages("Hmisc")
