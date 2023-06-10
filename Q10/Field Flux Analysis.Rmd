@@ -5,8 +5,8 @@ output: html_document
 
 Uploading the clean csv file with our field flux, moisture, temperature, etc.
 ```{r}
-setwd("~/Dropbox/Soil Respiration/2021 Field Flux Data")
-datafull <- read.csv("FieldRespirationSummaryTrimmed.csv", sep=",", header=T)
+urlfile = "https://raw.githubusercontent.com/gill20a/HopkinsForest_HodgsonThesis/main/Q10/Hodgson_Summer2021_FieldFluxDataSummary.csv"
+datafull <- read.csv(url(urlfile))
 ```
 Subsetting the matrix to remove measurements with fungi, with very high flux, and then to make new matrices for each site.  Then further trimming the lower matrix to remove some more outlier points.
 
