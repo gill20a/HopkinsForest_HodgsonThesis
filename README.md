@@ -10,3 +10,4 @@
    - **Metadata**: Metadata_Hodgson_Summer2021_FieldFluxDataSummary.csv
    - **Code**: Field Flux Analysis.Rmd
 3. **Litterfall & TBCF Analysis (LitterfallTBCF Folder)**
+4. **Lab Incubation, Curve Fitting, and Microbially-Accessible C Analysis (LabIncubation Folder)**
