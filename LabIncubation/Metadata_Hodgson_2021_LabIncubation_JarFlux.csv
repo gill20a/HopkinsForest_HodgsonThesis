@@ -1,0 +1,7 @@
+﻿Column,Description,Units
+JulianDate,Measurement date,
+Plot,Plot ID,NA
+drymass_g,Soil dry mass,g
+FracSoilC,Fraction of soil mass that is C,NA
+soilcmass_g,Mass C,g
+slope_ug_g_min,Respiration rate,µg C g dry soil-1 min-1
