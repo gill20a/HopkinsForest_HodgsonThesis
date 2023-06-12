@@ -2,12 +2,13 @@
 ## This repository contains all code to replicate analyses and figures from *Hodgson et al.  Biophysical controls on soil carbon cycling in a northern hardwood forest*. 
 
 1. **Summary of edaphic properties across sites**
-   - **Data**:
-   - **Metadata**:
-   - **Code**:
+   - Table 1
+   - Figure 1
+   - Table S1
 2. **Field Flux Analysis & Temperature sensitivity of soil respiration (Q10 Folder)**
-   - **Data**: Hodgson_Summer2021_FieldFluxDataSummary.csv
-   - **Metadata**: Metadata_Hodgson_Summer2021_FieldFluxDataSummary.csv
-   - **Code**: Field Flux Analysis.Rmd
+   - Figure 2
 3. **Litterfall & TBCF Analysis (LitterfallTBCF Folder)**
-4. **Lab Incubation, Curve Fitting, and Microbially-Accessible C Analysis (LabIncubation Folder)**
+   - Table 2
+5. **Lab Incubation, Curve Fitting, and Microbially-Accessible C Analysis (LabIncubation Folder)**
+  - Figure 3
+  - Table S5 & S6
